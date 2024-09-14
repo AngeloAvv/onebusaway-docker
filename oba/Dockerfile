@@ -2,8 +2,10 @@ FROM tomcat:8.5.98-jdk11-temurin
 
 ENV CATALINA_HOME /usr/local/tomcat
 ENV TZ=America/New_York
-ARG OBA_VERSION=2.5.12-cs
+ARG OBA_VERSION=2.5.13-cs
 ENV OBA_VERSION=$OBA_VERSION
+#ENV CATALINA_OPTS "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5050"
+#EXPOSE 5050
 
 ARG GID=1000
 ARG UID=1000
@@ -45,13 +47,13 @@ RUN wget "https://cdn.mysql.com/Downloads/Connector-J/mysql-connector-j-8.3.0.ta
 WORKDIR /oba/libs
 
 # OBA WAR and JAR files
-RUN wget "https://repo.camsys-apps.com/releases/org/onebusaway/onebusaway-api-webapp/${OBA_VERSION}/onebusaway-api-webapp-${OBA_VERSION}.war"
-RUN wget "https://repo.camsys-apps.com/releases/org/onebusaway/onebusaway-enterprise-acta-webapp/${OBA_VERSION}/onebusaway-enterprise-acta-webapp-${OBA_VERSION}.war"
-RUN wget "https://repo.camsys-apps.com/releases/org/onebusaway/onebusaway-transit-data-federation-webapp/${OBA_VERSION}/onebusaway-transit-data-federation-webapp-${OBA_VERSION}.war"
+RUN wget "https://github.com/AngeloAvv/onebusaway-application-modules/releases/download/v2.5.13-otsf-20240914-snapshot/onebusaway-api-webapp.war" -O "onebusaway-api-webapp-${OBA_VERSION}.war"
+RUN wget "https://github.com/AngeloAvv/onebusaway-application-modules/releases/download/v2.5.13-otsf-20240914-snapshot/onebusaway-enterprise-acta-webapp.war" -O "onebusaway-enterprise-acta-webapp-${OBA_VERSION}.war"
+RUN wget "https://github.com/AngeloAvv/onebusaway-application-modules/releases/download/v2.5.13-otsf-20240914-snapshot/onebusaway-transit-data-federation-webapp.war" -O "onebusaway-transit-data-federation-webapp-${OBA_VERSION}.war"
 
 # Bundle builder
 WORKDIR /oba/tools
-RUN wget "https://repo.camsys-apps.com/releases/org/onebusaway/onebusaway-transit-data-federation-builder/${OBA_VERSION}/onebusaway-transit-data-federation-builder-${OBA_VERSION}-withAllDependencies.jar"
+RUN wget "https://github.com/AngeloAvv/onebusaway-application-modules/releases/download/v2.5.13-otsf-20240914-snapshot/onebusaway-transit-data-federation-builder-2.5.13-otsf-withAllDependencies.jar" -O "onebusaway-transit-data-federation-builder-${OBA_VERSION}-withAllDependencies.jar"
 
 # Tomcat Configuration
 COPY ./config/context.xml $CATALINA_HOME/conf/context.xml
@@ -87,6 +89,7 @@ WORKDIR /usr/local/tomcat
 RUN rm -rf /oba/webapps
 
 COPY bootstrap.sh /oba/bootstrap.sh
+COPY gtfs_cleanup.sh /oba/gtfs_cleanup.sh
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod +x /oba/bootstrap.sh
 

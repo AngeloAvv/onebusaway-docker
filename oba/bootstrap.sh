@@ -9,6 +9,7 @@ if [ -n "$GTFS_URL" ]; then
     mkdir -p /bundle
     wget -O /bundle/gtfs.zip "$GTFS_URL"
     cd /bundle \
+        && bash /oba/gtfs_cleanup.sh gtfs.zip \
         && java -Xss4m -Xmx3g \
             -jar /oba/tools/onebusaway-transit-data-federation-builder-${OBA_VERSION}-withAllDependencies.jar \
             ./gtfs.zip \

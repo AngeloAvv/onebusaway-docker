@@ -44,6 +44,7 @@ services:
     ports:
       # Access the webapp on your host machine at a path like
       # http://localhost:8080/onebusaway-api-webapp/api/where/agency/${YOUR_AGENCY}.json?key=TEST
+      # - "5050:5050"
       - "8080:8080"
     # restart: always
 

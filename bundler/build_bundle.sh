@@ -16,6 +16,7 @@ wget -O /bundle/gtfs.zip ${RESOLVED_GTFS_URL}
 # as the bundle, or else some necessary files are not generated.
 
 cd /bundle \
+    && bash /oba/bin/gtfs_cleanup.sh gtfs.zip \
     && java -Xss4m -Xmx3g \
         -jar /oba/libs/onebusaway-transit-data-federation-builder-${OBA_VERSION}-withAllDependencies.jar \
         ./gtfs.zip \

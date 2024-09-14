@@ -1,6 +1,6 @@
 FROM tomcat:8.5.98-jdk11-temurin
 
-ARG OBA_VERSION=2.5.12-cs
+ARG OBA_VERSION=2.5.13-cs
 ENV OBA_VERSION_ENV=$OBA_VERSION
 
 # Start configuring OBA
@@ -12,6 +12,7 @@ RUN wget "https://repo.camsys-apps.com/releases/org/onebusaway/onebusaway-transi
 WORKDIR /oba/bin
 
 COPY ./build_bundle.sh .
+COPY ./gtfs_cleanup.sh .
 
 CMD /oba/bin/build_bundle.sh ${OBA_VERSION_ENV}
 
